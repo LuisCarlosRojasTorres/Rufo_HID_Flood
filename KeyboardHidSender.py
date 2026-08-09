@@ -333,7 +333,25 @@ class KeyboardHidSender:
         """Send all named combinations sequentially."""
         names = list(combinations.keys())
         total = len(names)
+        skipped = 0
+        sent = 0
         for index, name in enumerate(names, start=1):
+            combo = combinations[name]
+            effective_repeat = repeat if repeat is not None else combo.get("repeat", 1)
+            if (
+                safe_max_repeat is not None
+                and effective_repeat > safe_max_repeat
+                and not allow_high_repeat
+            ):
+                skipped += 1
+                print(
+                    f"[{index}/{total}] Skipped {name} "
+                    f"(repeat={effective_repeat} > safe_max_repeat={safe_max_repeat})"
+                )
+                if between_ms > 0 and index < total:
+                    time.sleep(between_ms / 1000)
+                continue
+
             print(f"[{index}/{total}] Sending {name}")
             self.send_named_combination(
                 combinations,
@@ -343,5 +361,7 @@ class KeyboardHidSender:
                 safe_max_repeat=safe_max_repeat,
                 allow_high_repeat=allow_high_repeat,
             )
+            sent += 1
             if between_ms > 0 and index < total:
                 time.sleep(between_ms / 1000)
+        print(f"Batch done: sent={sent}, skipped={skipped}")

@@ -29,10 +29,23 @@ source localenv/bin/activate
 python main.py CTRL_ALT_DELETE --dry-run
 ```
 
+Escolher por menu interativo entre teclado e mouse (envio em lote):
+
+```bash
+python main.py --menu --dry-run --between-ms 5
+```
+
 Enviar todas as combinacoes em sequencia (simulacao):
 
 ```bash
 python main.py --all --dry-run --between-ms 5
+```
+
+Enviar todas do teclado ou todas do mouse sem menu:
+
+```bash
+python main.py --all --target keyboard --dry-run --between-ms 5
+python main.py --all --target mouse --dry-run --between-ms 5
 ```
 
 ## Executar enviando para USB HID Gadget
@@ -88,6 +101,7 @@ Protecao contra envio acidental muito longo:
 - limite padrao: 20 repeticoes
 - para ultrapassar o limite, use `--allow-high-repeat`
 - para desativar limite, use `--safe-max-repeat -1`
+- com `--all`, entradas acima do limite sao puladas (skipped) quando `--allow-high-repeat` nao eh usado
 
 Envio em lote:
 
@@ -135,6 +149,10 @@ python mouse_main.py LEFT_CLICK --repeat 100 --dry-run --allow-high-repeat
 Padrao de repeticao no JSON de mouse:
 
 - `..._X2`, `..._X3`, `..._X4`, `..._X5`, `..._X10`, `..._X20`, `..._X50`, `..._X100`
+
+Regra de seguranca no envio em lote de mouse:
+
+- com `--all`, acoes acima do limite sao puladas (skipped) quando `--allow-high-repeat` nao eh usado
 
 Regenerar o JSON de mouse:
 
