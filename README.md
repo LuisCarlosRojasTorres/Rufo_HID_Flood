@@ -25,6 +25,12 @@ source localenv/bin/activate
 python main.py CTRL_ALT_DELETE --dry-run
 ```
 
+Enviar todas as combinacoes em sequencia (simulacao):
+
+```bash
+python main.py --all --dry-run --between-ms 5
+```
+
 ## Executar enviando para USB HID Gadget
 
 Por padrao o dispositivo eh `/dev/hidg0`:
@@ -78,6 +84,11 @@ Protecao contra envio acidental muito longo:
 - limite padrao: 20 repeticoes
 - para ultrapassar o limite, use `--allow-high-repeat`
 - para desativar limite, use `--safe-max-repeat -1`
+
+Envio em lote:
+
+- use `--all` para enviar todas as entradas do JSON em sequencia
+- use `--between-ms` para pausar entre combinacoes
 
 Para regenerar o JSON:
 

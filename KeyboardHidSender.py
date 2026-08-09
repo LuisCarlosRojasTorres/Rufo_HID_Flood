@@ -320,3 +320,28 @@ class KeyboardHidSender:
             hold_ms=hold_ms,
             repeat=final_repeat,
         )
+
+    def send_all_combinations(
+        self,
+        combinations: Dict[str, dict],
+        hold_ms: int = 60,
+        repeat: int | None = None,
+        safe_max_repeat: int | None = 20,
+        allow_high_repeat: bool = False,
+        between_ms: int = 0,
+    ) -> None:
+        """Send all named combinations sequentially."""
+        names = list(combinations.keys())
+        total = len(names)
+        for index, name in enumerate(names, start=1):
+            print(f"[{index}/{total}] Sending {name}")
+            self.send_named_combination(
+                combinations,
+                name,
+                hold_ms=hold_ms,
+                repeat=repeat,
+                safe_max_repeat=safe_max_repeat,
+                allow_high_repeat=allow_high_repeat,
+            )
+            if between_ms > 0 and index < total:
+                time.sleep(between_ms / 1000)

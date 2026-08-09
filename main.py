@@ -11,7 +11,14 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "combo",
+        nargs="?",
+        default=None,
         help="Combination name from JSON (example: CTRL_ALT_DELETE)",
+    )
+    parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Send all combinations from JSON sequentially",
     )
     parser.add_argument(
         "--json",
@@ -47,6 +54,12 @@ def parse_args() -> argparse.Namespace:
         help="Allow repeat values above --safe-max-repeat",
     )
     parser.add_argument(
+        "--between-ms",
+        default=0,
+        type=int,
+        help="Delay between combinations when using --all",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Print HID reports without writing to USB device",
@@ -56,18 +69,32 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    if not args.all and not args.combo:
+        raise SystemExit("Provide COMBO name or use --all")
+
     combos = load_hid_combinations(Path(args.json))
     sender = KeyboardHidSender(device_path=args.device, dry_run=args.dry_run)
     safe_max_repeat = None if args.safe_max_repeat < 0 else args.safe_max_repeat
-    sender.send_named_combination(
-        combos,
-        args.combo,
-        hold_ms=args.hold_ms,
-        repeat=args.repeat,
-        safe_max_repeat=safe_max_repeat,
-        allow_high_repeat=args.allow_high_repeat,
-    )
-    print(f"Combination '{args.combo}' sent successfully.")
+    if args.all:
+        sender.send_all_combinations(
+            combos,
+            hold_ms=args.hold_ms,
+            repeat=args.repeat,
+            safe_max_repeat=safe_max_repeat,
+            allow_high_repeat=args.allow_high_repeat,
+            between_ms=args.between_ms,
+        )
+        print("All combinations sent successfully.")
+    else:
+        sender.send_named_combination(
+            combos,
+            args.combo,
+            hold_ms=args.hold_ms,
+            repeat=args.repeat,
+            safe_max_repeat=safe_max_repeat,
+            allow_high_repeat=args.allow_high_repeat,
+        )
+        print(f"Combination '{args.combo}' sent successfully.")
 
 
 if __name__ == "__main__":
