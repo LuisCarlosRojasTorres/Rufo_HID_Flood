@@ -1,0 +1,53 @@
+name: Build and Package
+
+on:
+  push:
+    branches:
+      - toProduction
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+
+      - name: Generate JSON configuration files
+        run: |
+          python tools/generate_keyboard_combinations.py
+          python tools/generate_mouse_combinations.py
+
+      - name: Build executable
+        run: |
+          pyinstaller --onefile --name rufo_hid main.py
+
+      - name: Assemble release folder
+        run: |
+          mkdir -p release/config
+          cp dist/rufo_hid release/
+          cp data/keyboard_combinations.json release/config/
+          cp data/mouse_combinations.json release/config/
+          cp README.md LICENSE release/
+
+      - name: Create tarball
+        run: |
+          tar -czf release/rufo_hid_linux.tar.gz -C release rufo_hid config README.md LICENSE
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rufo-hid-release-linux
+          path: release/
+          if-no-files-found: error

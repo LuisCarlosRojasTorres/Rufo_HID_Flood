@@ -170,3 +170,25 @@ python tools/generate_mouse_combinations.py
 
 - O host Linux precisa estar configurado como USB HID gadget para existir `/dev/hidg0`.
 - Use somente em ambientes autorizados.
+
+## Pipeline no GitHub
+
+O repositorio inclui workflow em `.github/workflows/build-and-package.yml` para rodar no push (`main`, `master` e `toProduction`) ou manualmente.
+
+O pipeline executa:
+
+- gera os JSONs de configuracao (teclado e mouse)
+- compila executavel Linux com PyInstaller (`rufo_hid`)
+- monta pasta `release/` com:
+	- `rufo_hid`
+	- `config/keyboard_combinations.json`
+	- `config/mouse_combinations.json`
+	- `README.md`
+	- `LICENSE`
+- publica artefato `rufo-hid-release-linux` no GitHub Actions
+
+Download do resultado:
+
+- acesse a aba Actions no GitHub
+- abra a execucao do workflow
+- baixe o artefato `rufo-hid-release-linux`
