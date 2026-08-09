@@ -1,0 +1,34 @@
+{
+  "CTRL_ALT_DELETE": {
+    "modifiers": ["CTRL", "ALT"],
+    "keys": ["DELETE"]
+  },
+  "ALT_F4": {
+    "modifiers": ["ALT"],
+    "keys": ["F4"]
+  },
+  "CTRL_C": {
+    "modifiers": ["CTRL"],
+    "keys": ["C"]
+  },
+  "CTRL_V": {
+    "modifiers": ["CTRL"],
+    "keys": ["V"]
+  },
+  "CTRL_Z": {
+    "modifiers": ["CTRL"],
+    "keys": ["Z"]
+  },
+  "CTRL_SHIFT_ESC": {
+    "modifiers": ["CTRL", "SHIFT"],
+    "keys": ["ESC"]
+  },
+  "WIN_R": {
+    "modifiers": ["GUI"],
+    "keys": ["R"]
+  },
+  "ENTER": {
+    "modifiers": [],
+    "keys": ["ENTER"]
+  }
+}
