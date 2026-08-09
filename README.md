@@ -8,6 +8,10 @@ Projeto em Python para simular teclado HID e enviar combinacoes de teclas via US
 - `HidLoader.py`: carrega e valida combinacoes de teclado de um JSON.
 - `KeyboardHidSender.py`: monta e envia relatorios HID de teclado (8 bytes).
 - `data/keyboard_combinations.json`: lista de combinacoes prontas.
+- `mouse_main.py`: ponto de entrada para mouse HID.
+- `MouseLoader.py`: carrega e valida acoes de mouse de um JSON.
+- `MouseHidSender.py`: monta e envia relatorios HID de mouse (4 bytes).
+- `data/mouse_combinations.json`: lista de acoes de mouse prontas.
 
 ## Ambiente local
 
@@ -94,6 +98,48 @@ Para regenerar o JSON:
 
 ```bash
 python tools/generate_keyboard_combinations.py
+```
+
+## Mouse HID
+
+Executar uma acao de mouse em simulacao:
+
+```bash
+python mouse_main.py LEFT_CLICK --dry-run
+```
+
+Executar todas as acoes de mouse em sequencia:
+
+```bash
+python mouse_main.py --all --dry-run --between-ms 5
+```
+
+Exemplos de acoes de mouse:
+
+- `LEFT_CLICK`
+- `RIGHT_CLICK`
+- `MIDDLE_CLICK`
+- `MOVE_UP_10`
+- `MOVE_RIGHT_50`
+- `SCROLL_UP_3`
+
+Exemplos com repeticao:
+
+```bash
+python mouse_main.py LEFT_CLICK_X5 --dry-run
+python mouse_main.py SCROLL_UP_3_X10 --dry-run
+python mouse_main.py LEFT_CLICK_X50 --dry-run --allow-high-repeat
+python mouse_main.py LEFT_CLICK --repeat 100 --dry-run --allow-high-repeat
+```
+
+Padrao de repeticao no JSON de mouse:
+
+- `..._X2`, `..._X3`, `..._X4`, `..._X5`, `..._X10`, `..._X20`, `..._X50`, `..._X100`
+
+Regenerar o JSON de mouse:
+
+```bash
+python tools/generate_mouse_combinations.py
 ```
 
 ## Observacoes
