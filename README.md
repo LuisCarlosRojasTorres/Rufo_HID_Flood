@@ -40,6 +40,27 @@ python main.py CTRL_ALT_DELETE --device /dev/hidg0
 - modificadores: CTRL + ALT
 - tecla: DELETE
 
+## Todas as teclas e combinacoes
+
+O arquivo `data/keyboard_combinations.json` agora eh gerado com combinacoes para todas as teclas disponiveis em `KeyboardHidSender.py`, incluindo exemplos como:
+
+- F1
+- ALT_TAB
+- ALTGR_Q
+- SHIFT_F1
+- CTRL_ALT_DELETE
+
+Padrao de nome:
+
+- sem modificador: `TECLA` (ex.: `F1`)
+- com modificadores: `MOD1_MOD2_TECLA` (ex.: `ALT_TAB`, `CTRL_SHIFT_ESC`)
+
+Para regenerar o JSON:
+
+```bash
+python tools/generate_keyboard_combinations.py
+```
+
 ## Observacoes
 
 - O host Linux precisa estar configurado como USB HID gadget para existir `/dev/hidg0`.
