@@ -26,7 +26,7 @@ MODIFIER_SETS = [
     ["CTRL", "SHIFT", "ALTGR"],
 ]
 
-REPEAT_COUNTS = [2, 3, 4, 5]
+REPEAT_COUNTS = [2, 3, 4, 5, 10, 20, 50, 100]
 MODIFIER_ONLY = ["SHIFT", "CTRL", "ALT", "ALTGR", "GUI"]
 
 

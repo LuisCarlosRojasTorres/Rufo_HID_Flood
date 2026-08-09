@@ -54,13 +54,17 @@ Padrao de nome:
 
 - sem modificador: `TECLA` (ex.: `F1`)
 - com modificadores: `MOD1_MOD2_TECLA` (ex.: `ALT_TAB`, `CTRL_SHIFT_ESC`)
-- repeticao no JSON: `..._X2` ate `..._X5` (ex.: `SHIFT_X5`, `ALT_TAB_X5`)
+- repeticao no JSON: `..._X2`, `..._X3`, `..._X4`, `..._X5`, `..._X10`, `..._X20`, `..._X50`, `..._X100`
 
 Exemplos de repeticao:
 
 ```bash
 python main.py SHIFT_X5 --dry-run
 python main.py ALT_TAB_X5 --dry-run
+python main.py SHIFT_X10 --dry-run
+python main.py ALT_TAB_X20 --dry-run
+python main.py SHIFT_X50 --dry-run --allow-high-repeat
+python main.py ALT_TAB_X100 --dry-run --allow-high-repeat
 ```
 
 Tambem eh possivel forcar repeticao por linha de comando:
@@ -68,6 +72,12 @@ Tambem eh possivel forcar repeticao por linha de comando:
 ```bash
 python main.py SHIFT --repeat 5 --dry-run
 ```
+
+Protecao contra envio acidental muito longo:
+
+- limite padrao: 20 repeticoes
+- para ultrapassar o limite, use `--allow-high-repeat`
+- para desativar limite, use `--safe-max-repeat -1`
 
 Para regenerar o JSON:
 

@@ -292,6 +292,8 @@ class KeyboardHidSender:
         combo_name: str,
         hold_ms: int = 60,
         repeat: int | None = None,
+        safe_max_repeat: int | None = 20,
+        allow_high_repeat: bool = False,
     ) -> None:
         combo_key = combo_name.upper()
         if combo_key not in combinations:
@@ -301,6 +303,17 @@ class KeyboardHidSender:
         combo = combinations[combo_key]
         combo_repeat = combo.get("repeat", 1)
         final_repeat = repeat if repeat is not None else combo_repeat
+
+        if (
+            safe_max_repeat is not None
+            and final_repeat > safe_max_repeat
+            and not allow_high_repeat
+        ):
+            raise ValueError(
+                f"Repeat {final_repeat} exceeds safe limit {safe_max_repeat}. "
+                "Use allow_high_repeat to override."
+            )
+
         self.send_combination(
             combo.get("modifiers", []),
             combo.get("keys", []),
