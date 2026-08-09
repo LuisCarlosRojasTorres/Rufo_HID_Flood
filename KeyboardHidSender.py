@@ -268,19 +268,42 @@ class KeyboardHidSender:
         with self.device_path.open("wb", buffering=0) as hid_dev:
             hid_dev.write(report)
 
-    def send_combination(self, modifiers: Iterable[str], keys: Iterable[str], hold_ms: int = 60) -> None:
+    def send_combination(
+        self,
+        modifiers: Iterable[str],
+        keys: Iterable[str],
+        hold_ms: int = 60,
+        repeat: int = 1,
+    ) -> None:
+        if repeat < 1:
+            raise ValueError("repeat must be >= 1")
+
         press_report = self.build_report(modifiers, keys)
         release_report = bytes([0x00] * 8)
 
-        self._write_report(press_report)
-        time.sleep(max(hold_ms, 0) / 1000)
-        self._write_report(release_report)
+        for _ in range(repeat):
+            self._write_report(press_report)
+            time.sleep(max(hold_ms, 0) / 1000)
+            self._write_report(release_report)
 
-    def send_named_combination(self, combinations: Dict[str, dict], combo_name: str, hold_ms: int = 60) -> None:
+    def send_named_combination(
+        self,
+        combinations: Dict[str, dict],
+        combo_name: str,
+        hold_ms: int = 60,
+        repeat: int | None = None,
+    ) -> None:
         combo_key = combo_name.upper()
         if combo_key not in combinations:
             available = ", ".join(sorted(combinations.keys()))
             raise KeyError(f"Combination '{combo_name}' not found. Available: {available}")
 
         combo = combinations[combo_key]
-        self.send_combination(combo.get("modifiers", []), combo.get("keys", []), hold_ms=hold_ms)
+        combo_repeat = combo.get("repeat", 1)
+        final_repeat = repeat if repeat is not None else combo_repeat
+        self.send_combination(
+            combo.get("modifiers", []),
+            combo.get("keys", []),
+            hold_ms=hold_ms,
+            repeat=final_repeat,
+        )

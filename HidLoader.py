@@ -33,15 +33,19 @@ def load_hid_combinations(json_path: str | Path) -> Dict[str, dict[str, Any]]:
 
         modifiers = combo.get("modifiers", [])
         keys = combo.get("keys", [])
+        repeat = combo.get("repeat", 1)
 
         if not isinstance(modifiers, list) or not all(isinstance(m, str) for m in modifiers):
             raise ValueError(f"'{combo_name}.modifiers' must be a list of strings")
         if not isinstance(keys, list) or not all(isinstance(k, str) for k in keys):
             raise ValueError(f"'{combo_name}.keys' must be a list of strings")
+        if not isinstance(repeat, int) or repeat < 1:
+            raise ValueError(f"'{combo_name}.repeat' must be an integer >= 1")
 
         normalized[combo_name.upper()] = {
             "modifiers": [m.upper() for m in modifiers],
             "keys": [k.upper() for k in keys],
+            "repeat": repeat,
         }
 
     return normalized

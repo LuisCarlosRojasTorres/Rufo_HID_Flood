@@ -30,6 +30,12 @@ def parse_args() -> argparse.Namespace:
         help="How long to hold keys before release",
     )
     parser.add_argument(
+        "--repeat",
+        default=None,
+        type=int,
+        help="Override how many times to repeat the combination",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Print HID reports without writing to USB device",
@@ -41,7 +47,7 @@ def main() -> None:
     args = parse_args()
     combos = load_hid_combinations(Path(args.json))
     sender = KeyboardHidSender(device_path=args.device, dry_run=args.dry_run)
-    sender.send_named_combination(combos, args.combo, hold_ms=args.hold_ms)
+    sender.send_named_combination(combos, args.combo, hold_ms=args.hold_ms, repeat=args.repeat)
     print(f"Combination '{args.combo}' sent successfully.")
 
 

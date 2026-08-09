@@ -54,6 +54,20 @@ Padrao de nome:
 
 - sem modificador: `TECLA` (ex.: `F1`)
 - com modificadores: `MOD1_MOD2_TECLA` (ex.: `ALT_TAB`, `CTRL_SHIFT_ESC`)
+- repeticao no JSON: `..._X2` ate `..._X5` (ex.: `SHIFT_X5`, `ALT_TAB_X5`)
+
+Exemplos de repeticao:
+
+```bash
+python main.py SHIFT_X5 --dry-run
+python main.py ALT_TAB_X5 --dry-run
+```
+
+Tambem eh possivel forcar repeticao por linha de comando:
+
+```bash
+python main.py SHIFT --repeat 5 --dry-run
+```
 
 Para regenerar o JSON:
 

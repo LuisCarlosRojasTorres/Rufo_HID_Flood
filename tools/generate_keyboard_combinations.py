@@ -26,6 +26,9 @@ MODIFIER_SETS = [
     ["CTRL", "SHIFT", "ALTGR"],
 ]
 
+REPEAT_COUNTS = [2, 3, 4, 5]
+MODIFIER_ONLY = ["SHIFT", "CTRL", "ALT", "ALTGR", "GUI"]
+
 
 def combo_name(modifiers: list[str], key: str) -> str:
     if not modifiers:
@@ -35,13 +38,28 @@ def combo_name(modifiers: list[str], key: str) -> str:
 
 def build_combinations() -> dict[str, dict[str, list[str]]]:
     combos: dict[str, dict[str, list[str]]] = {}
+
+    def add_combo(name: str, modifiers: list[str], keys: list[str], repeat: int = 1) -> None:
+        entry: dict[str, list[str] | int] = {
+            "modifiers": modifiers,
+            "keys": keys,
+        }
+        if repeat > 1:
+            entry["repeat"] = repeat
+        combos[name] = entry
+
     for key in CANONICAL_KEYS:
         for modifiers in MODIFIER_SETS:
             name = combo_name(modifiers, key)
-            combos[name] = {
-                "modifiers": modifiers,
-                "keys": [key],
-            }
+            add_combo(name, modifiers, [key], repeat=1)
+            for repeat in REPEAT_COUNTS:
+                add_combo(f"{name}_X{repeat}", modifiers, [key], repeat=repeat)
+
+    for modifier in MODIFIER_ONLY:
+        add_combo(modifier, [modifier], [], repeat=1)
+        for repeat in REPEAT_COUNTS:
+            add_combo(f"{modifier}_X{repeat}", [modifier], [], repeat=repeat)
+
     return combos
 
 
