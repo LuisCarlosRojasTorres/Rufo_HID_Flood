@@ -107,6 +107,11 @@ Envio em lote:
 
 - use `--all` para enviar todas as entradas do JSON em sequencia
 - use `--between-ms` para pausar entre combinacoes
+- o sistema mostra tempo por item e tempo total do lote (`total_time`)
+
+Tempo no envio individual:
+
+- no envio de um unico item, a saida inclui `[TIMER] NOME: XX.XX ms`
 
 Para regenerar o JSON:
 
@@ -153,6 +158,7 @@ Padrao de repeticao no JSON de mouse:
 Regra de seguranca no envio em lote de mouse:
 
 - com `--all`, acoes acima do limite sao puladas (skipped) quando `--allow-high-repeat` nao eh usado
+- o lote de mouse tambem exibe tempo por item e tempo total (`total_time`)
 
 Regenerar o JSON de mouse:
 

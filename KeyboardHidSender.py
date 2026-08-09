@@ -294,6 +294,7 @@ class KeyboardHidSender:
         repeat: int | None = None,
         safe_max_repeat: int | None = 20,
         allow_high_repeat: bool = False,
+        print_timing: bool = True,
     ) -> None:
         combo_key = combo_name.upper()
         if combo_key not in combinations:
@@ -314,12 +315,16 @@ class KeyboardHidSender:
                 "Use allow_high_repeat to override."
             )
 
+        start = time.perf_counter()
         self.send_combination(
             combo.get("modifiers", []),
             combo.get("keys", []),
             hold_ms=hold_ms,
             repeat=final_repeat,
         )
+        if print_timing:
+            elapsed_ms = (time.perf_counter() - start) * 1000
+            print(f"[TIMER] {combo_key}: {elapsed_ms:.2f} ms")
 
     def send_all_combinations(
         self,
@@ -331,6 +336,7 @@ class KeyboardHidSender:
         between_ms: int = 0,
     ) -> None:
         """Send all named combinations sequentially."""
+        batch_start = time.perf_counter()
         names = list(combinations.keys())
         total = len(names)
         skipped = 0
@@ -353,6 +359,7 @@ class KeyboardHidSender:
                 continue
 
             print(f"[{index}/{total}] Sending {name}")
+            item_start = time.perf_counter()
             self.send_named_combination(
                 combinations,
                 name,
@@ -360,8 +367,14 @@ class KeyboardHidSender:
                 repeat=repeat,
                 safe_max_repeat=safe_max_repeat,
                 allow_high_repeat=allow_high_repeat,
+                print_timing=False,
             )
+            item_elapsed_ms = (time.perf_counter() - item_start) * 1000
+            print(f"[{index}/{total}] Done {name} in {item_elapsed_ms:.2f} ms")
             sent += 1
             if between_ms > 0 and index < total:
                 time.sleep(between_ms / 1000)
-        print(f"Batch done: sent={sent}, skipped={skipped}")
+        batch_elapsed_ms = (time.perf_counter() - batch_start) * 1000
+        print(
+            f"Batch done: sent={sent}, skipped={skipped}, total_time={batch_elapsed_ms:.2f} ms"
+        )

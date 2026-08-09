@@ -87,6 +87,7 @@ class MouseHidSender:
         repeat: int | None = None,
         safe_max_repeat: int | None = 20,
         allow_high_repeat: bool = False,
+        print_timing: bool = True,
     ) -> None:
         action_key = action_name.upper()
         if action_key not in actions:
@@ -107,6 +108,7 @@ class MouseHidSender:
                 "Use allow_high_repeat to override."
             )
 
+        start = time.perf_counter()
         self.send_action(
             action.get("buttons", []),
             move_x=int(action.get("move_x", 0)),
@@ -115,6 +117,9 @@ class MouseHidSender:
             hold_ms=hold_ms,
             repeat=final_repeat,
         )
+        if print_timing:
+            elapsed_ms = (time.perf_counter() - start) * 1000
+            print(f"[TIMER] {action_key}: {elapsed_ms:.2f} ms")
 
     def send_all_actions(
         self,
@@ -125,6 +130,7 @@ class MouseHidSender:
         allow_high_repeat: bool = False,
         between_ms: int = 0,
     ) -> None:
+        batch_start = time.perf_counter()
         names = list(actions.keys())
         total = len(names)
         skipped = 0
@@ -147,6 +153,7 @@ class MouseHidSender:
                 continue
 
             print(f"[{index}/{total}] Sending {name}")
+            item_start = time.perf_counter()
             self.send_named_action(
                 actions,
                 name,
@@ -154,8 +161,14 @@ class MouseHidSender:
                 repeat=repeat,
                 safe_max_repeat=safe_max_repeat,
                 allow_high_repeat=allow_high_repeat,
+                print_timing=False,
             )
+            item_elapsed_ms = (time.perf_counter() - item_start) * 1000
+            print(f"[{index}/{total}] Done {name} in {item_elapsed_ms:.2f} ms")
             sent += 1
             if between_ms > 0 and index < total:
                 time.sleep(between_ms / 1000)
-        print(f"Batch done: sent={sent}, skipped={skipped}")
+        batch_elapsed_ms = (time.perf_counter() - batch_start) * 1000
+        print(
+            f"Batch done: sent={sent}, skipped={skipped}, total_time={batch_elapsed_ms:.2f} ms"
+        )
